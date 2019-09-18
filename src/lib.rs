@@ -14,6 +14,7 @@ pub fn start() -> Result<(), JsValue> {
     let mut router = Router::new();
     router.register("/00-hello_world", Box::new(crate::pages::hello_world::run));
     router.register("/01-webgl/hello", Box::new(crate::pages::webgl_01_hello::run));
+    router.register("/02-webgl/hello_app", Box::new(crate::pages::webgl_02_hello_app::run));
     router.route().expect("some route error");
     Ok(())
 }
