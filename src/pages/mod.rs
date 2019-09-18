@@ -1,3 +1,2 @@
-mod hello_world;
-
-pub(crate) use hello_world::hello_world;
+pub mod hello_world;
+pub mod webgl_01_hello;

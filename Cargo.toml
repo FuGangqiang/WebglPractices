@@ -28,6 +28,13 @@ features = [
   'Window',
   'Location',
   'Text',
+  'CssStyleDeclaration',
+  'Event',
+  'HtmlCanvasElement',
+  'WebGlBuffer',
+  'WebGl2RenderingContext',
+  'WebGlProgram',
+  'WebGlShader',
 ]
 
 [dev-dependencies]

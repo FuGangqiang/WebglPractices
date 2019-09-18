@@ -12,7 +12,8 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 pub fn start() -> Result<(), JsValue> {
     console_log::init_with_level(log::Level::Debug).expect("set log level error");
     let mut router = Router::new();
-    router.register("/00-hello_world", Box::new(pages::hello_world));
+    router.register("/00-hello_world", Box::new(crate::pages::hello_world::run));
+    router.register("/01-webgl/hello", Box::new(crate::pages::webgl_01_hello::run));
     router.route().expect("some route error");
     Ok(())
 }
