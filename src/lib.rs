@@ -1,3 +1,7 @@
+mod pages;
+mod router;
+
+use router::Router;
 use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
@@ -6,18 +10,9 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
-    index()?;
-    Ok(())
-}
-
-fn index() -> Result<(), JsValue> {
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
-
-    let val = document.create_element("p")?;
-    val.set_inner_html("Webgl2 Practices");
-    body.append_child(&val)?;
-
+    console_log::init_with_level(log::Level::Debug).expect("set log level error");
+    let mut router = Router::new();
+    router.register("/00-hello_world", Box::new(pages::hello_world));
+    router.route().expect("some route error");
     Ok(())
 }
