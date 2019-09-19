@@ -72,15 +72,10 @@ impl App {
     }
 
     fn render(self: Rc<Self>) -> Result<(), JsValue> {
-        self.gl.clear_color(
-            self.clear_color[0],
-            self.clear_color[1],
-            self.clear_color[2],
-            self.clear_color[3],
-        );
-        self.gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
         self.gl
-            .viewport(0, 0, self.viewport.width as i32, self.viewport.height as i32);
+            .clear_color(self.clear_color[0], self.clear_color[1], self.clear_color[2], self.clear_color[3]);
+        self.gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+        self.gl.viewport(0, 0, self.viewport.width as i32, self.viewport.height as i32);
         Ok(())
     }
 }

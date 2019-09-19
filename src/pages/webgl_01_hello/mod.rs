@@ -19,10 +19,7 @@ pub fn run() -> Result<(), JsValue> {
     canvas.set_width(window.inner_width()?.as_f64().unwrap() as u32);
     canvas.set_height(window.inner_height()?.as_f64().unwrap() as u32);
 
-    let gl = canvas
-        .get_context("webgl2")?
-        .unwrap()
-        .dyn_into::<WebGl2RenderingContext>()?;
+    let gl = canvas.get_context("webgl2")?.unwrap().dyn_into::<WebGl2RenderingContext>()?;
 
     gl.clear_color(0.0, 0.0, 0.0, 1.0);
     gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);

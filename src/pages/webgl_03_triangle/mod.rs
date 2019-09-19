@@ -31,18 +31,12 @@ struct Viewport {
 impl App {
     fn new() -> Self {
         let canvas = create_canvas().unwrap();
-
         let viewport = Viewport {
             width: canvas.width() as f64,
             height: canvas.height() as f64,
         };
         let clear_color = Vector4::new(0.0, 0.0, 0.0, 1.0);
-        let gl = canvas
-            .get_context("webgl2")
-            .unwrap()
-            .unwrap()
-            .dyn_into::<GL>()
-            .unwrap();
+        let gl = canvas.get_context("webgl2").unwrap().unwrap().dyn_into::<GL>().unwrap();
         let vertices = [-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
         let triangle_indices = [0, 1, 2];
         Self {
@@ -81,19 +75,10 @@ impl App {
     }
 
     fn render(self: Rc<Self>) -> Result<(), JsValue> {
-        self.gl.clear_color(
-            self.clear_color[0],
-            self.clear_color[1],
-            self.clear_color[2],
-            self.clear_color[3],
-        );
+        self.gl
+            .clear_color(self.clear_color[0], self.clear_color[1], self.clear_color[2], self.clear_color[3]);
         self.gl.clear(GL::COLOR_BUFFER_BIT);
-        self.gl.viewport(
-            0,
-            0,
-            self.viewport.width as i32,
-            self.viewport.height as i32,
-        );
+        self.gl.viewport(0, 0, self.viewport.width as i32, self.viewport.height as i32);
 
         let vertex_shader = compile_shader(&self.gl, GL::VERTEX_SHADER, VERTEX_SHADER_SRC)?;
         let fragment_shader = compile_shader(&self.gl, GL::FRAGMENT_SHADER, FRAGMENT_SHADER_SRC)?;
@@ -101,60 +86,37 @@ impl App {
         self.gl.use_program(Some(&program));
 
         let vertices_buffer = self.gl.create_buffer().unwrap();
-        self.gl
-            .bind_buffer(GL::ARRAY_BUFFER, Some(&vertices_buffer));
+        self.gl.bind_buffer(GL::ARRAY_BUFFER, Some(&vertices_buffer));
         unsafe {
             let vertices_data_array = js_sys::Float32Array::view(&self.vertices);
-            self.gl.buffer_data_with_array_buffer_view(
-                GL::ARRAY_BUFFER,
-                &vertices_data_array,
-                GL::STATIC_DRAW,
-            );
+            self.gl
+                .buffer_data_with_array_buffer_view(GL::ARRAY_BUFFER, &vertices_data_array, GL::STATIC_DRAW);
         }
 
         let vertex_position_attrib = self.gl.get_attrib_location(&program, "aVertexPosition");
+        self.gl.enable_vertex_attrib_array(vertex_position_attrib as u32);
         self.gl
-            .enable_vertex_attrib_array(vertex_position_attrib as u32);
-        self.gl.vertex_attrib_pointer_with_i32(
-            vertex_position_attrib as u32,
-            3,
-            GL::FLOAT,
-            false,
-            0,
-            0,
-        );
+            .vertex_attrib_pointer_with_i32(vertex_position_attrib as u32, 3, GL::FLOAT, false, 0, 0);
 
         let indices_buffer = self.gl.create_buffer().unwrap();
-        self.gl
-            .bind_buffer(GL::ELEMENT_ARRAY_BUFFER, Some(&indices_buffer));
+        self.gl.bind_buffer(GL::ELEMENT_ARRAY_BUFFER, Some(&indices_buffer));
         unsafe {
             let indices_data_array = js_sys::Uint16Array::view(&self.triangle_indices);
-            self.gl.buffer_data_with_array_buffer_view(
-                GL::ELEMENT_ARRAY_BUFFER,
-                &indices_data_array,
-                GL::STATIC_DRAW,
-            );
+            self.gl
+                .buffer_data_with_array_buffer_view(GL::ELEMENT_ARRAY_BUFFER, &indices_data_array, GL::STATIC_DRAW);
         }
 
-        self.gl
-            .draw_elements_with_i32(GL::TRIANGLES, 3, GL::UNSIGNED_SHORT, 0);
+        self.gl.draw_elements_with_i32(GL::TRIANGLES, 3, GL::UNSIGNED_SHORT, 0);
 
         Ok(())
     }
 }
 
 fn compile_shader(gl: &GL, shader_type: u32, source: &str) -> Result<WebGlShader, String> {
-    let shader = gl
-        .create_shader(shader_type)
-        .ok_or_else(|| "Could not create shader".to_string())?;
+    let shader = gl.create_shader(shader_type).ok_or_else(|| "Could not create shader".to_string())?;
     gl.shader_source(&shader, source);
     gl.compile_shader(&shader);
-
-    if gl
-        .get_shader_parameter(&shader, GL::COMPILE_STATUS)
-        .as_bool()
-        .unwrap_or(false)
-    {
+    if gl.get_shader_parameter(&shader, GL::COMPILE_STATUS).as_bool().unwrap_or(false) {
         Ok(shader)
     } else {
         Err(gl
@@ -163,24 +125,12 @@ fn compile_shader(gl: &GL, shader_type: u32, source: &str) -> Result<WebGlShader
     }
 }
 
-fn link_program(
-    gl: &GL,
-    vert_shader: &WebGlShader,
-    frag_shader: &WebGlShader,
-) -> Result<WebGlProgram, String> {
-    let program = gl
-        .create_program()
-        .ok_or_else(|| "Unable to create shader program".to_string())?;
-
+fn link_program(gl: &GL, vert_shader: &WebGlShader, frag_shader: &WebGlShader) -> Result<WebGlProgram, String> {
+    let program = gl.create_program().ok_or_else(|| "Unable to create shader program".to_string())?;
     gl.attach_shader(&program, &vert_shader);
     gl.attach_shader(&program, &frag_shader);
     gl.link_program(&program);
-
-    if gl
-        .get_program_parameter(&program, GL::LINK_STATUS)
-        .as_bool()
-        .unwrap_or(false)
-    {
+    if gl.get_program_parameter(&program, GL::LINK_STATUS).as_bool().unwrap_or(false) {
         Ok(program)
     } else {
         Err(gl
