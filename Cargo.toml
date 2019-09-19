@@ -37,6 +37,7 @@ features = [
   'WebGl2RenderingContext',
   'WebGlProgram',
   'WebGlShader',
+  'WebGlUniformLocation',
 ]
 
 [dev-dependencies]
