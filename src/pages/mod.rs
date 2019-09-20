@@ -5,3 +5,4 @@ pub mod webgl_03_triangle;
 pub mod webgl_04_triangle_shader;
 pub mod webgl_05_triangle_state_assets;
 pub mod webgl_06_triangle_lines;
+pub mod webgl_07_triangle_points;
