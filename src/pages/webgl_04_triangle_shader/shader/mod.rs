@@ -1,3 +1,4 @@
+use log::debug;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
@@ -10,11 +11,23 @@ pub struct Shader {
     attribs: RefCell<HashMap<String, i32>>,
 }
 
+macro_rules! try_debug {
+    ($target: expr, $e: expr) => {
+        match $e {
+            Ok(result) => result,
+            Err(msg) => {
+                debug!("{} error: {}", $target, msg);
+                return Err(msg.into());
+            }
+        }
+    };
+}
+
 impl Shader {
     pub fn new(gl: &GL, vert_shader: &str, frag_shader: &str) -> Result<Shader, JsValue> {
-        let vert_shader = compile_shader(&gl, GL::VERTEX_SHADER, vert_shader)?;
-        let frag_shader = compile_shader(&gl, GL::FRAGMENT_SHADER, frag_shader)?;
-        let program = link_program(&gl, &vert_shader, &frag_shader)?;
+        let vert_shader = try_debug!("compile vert shader", compile_shader(&gl, GL::VERTEX_SHADER, vert_shader));
+        let frag_shader = try_debug!("compile frag shader", compile_shader(&gl, GL::FRAGMENT_SHADER, frag_shader));
+        let program = try_debug!("link program", link_program(&gl, &vert_shader, &frag_shader));
         let uniforms = RefCell::new(HashMap::new());
         let attribs = RefCell::new(HashMap::new());
         Ok(Self { program, uniforms, attribs })
