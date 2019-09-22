@@ -23,6 +23,7 @@ pub fn start() -> Result<(), JsValue> {
     );
     router.register("/06-webgl/triangle_lines", Box::new(crate::pages::webgl_06_triangle_lines::run));
     router.register("/07-webgl/triangle_points", Box::new(crate::pages::webgl_07_triangle_points::run));
+    router.register("/08-webgl/cube", Box::new(crate::pages::webgl_08_cube::run));
     router.route().expect("some route error");
     Ok(())
 }
