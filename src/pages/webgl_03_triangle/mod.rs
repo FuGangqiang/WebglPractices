@@ -1,4 +1,4 @@
-use nalgebra::Vector4;
+use cgmath::Vector4;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -76,7 +76,7 @@ impl App {
 
     fn render(self: Rc<Self>) -> Result<(), JsValue> {
         self.gl
-            .clear_color(self.clear_color[0], self.clear_color[1], self.clear_color[2], self.clear_color[3]);
+            .clear_color(self.clear_color.x, self.clear_color.y, self.clear_color.z, self.clear_color.w);
         self.gl.clear(GL::COLOR_BUFFER_BIT);
         self.gl.viewport(0, 0, self.viewport.width as i32, self.viewport.height as i32);
 
