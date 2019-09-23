@@ -32,12 +32,16 @@ features = [
   'Text',
   'CssStyleDeclaration',
   'Event',
+  'EventTarget',
+  'MouseEvent',
+  'WheelEvent',
   'HtmlCanvasElement',
   'WebGlBuffer',
   'WebGl2RenderingContext',
   'WebGlProgram',
   'WebGlShader',
   'WebGlUniformLocation',
+  'WebGlVertexArrayObject',
 ]
 
 [dev-dependencies]

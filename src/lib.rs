@@ -18,6 +18,7 @@ pub fn start() -> Result<(), JsValue> {
     router.register("/03-webgl/triangle_lines", Box::new(crate::pages::webgl_03_triangle_lines::run));
     router.register("/04-webgl/triangle_points", Box::new(crate::pages::webgl_04_triangle_points::run));
     router.register("/05-webgl/cube", Box::new(crate::pages::webgl_05_cube::run));
+    router.register("/06-webgl/camera", Box::new(crate::pages::webgl_06_camera::run));
     router.route().expect("some route error");
     Ok(())
 }
