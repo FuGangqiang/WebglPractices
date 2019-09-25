@@ -7,6 +7,7 @@ pub struct Camera {
     left_right_angle: f32, // yaw
     r: f32,
     focus: Point3<f32>,
+    sensitivity: f32,
 }
 
 // todo: add Ortho
@@ -26,6 +27,7 @@ impl Camera {
             up_down_angle: 80.0f32.to_radians(),
             r: 15.0,
             focus: Point3::new(0.0, 0.0, 0.0),
+            sensitivity: 0.02,
         }
     }
 
@@ -48,12 +50,19 @@ impl Camera {
     }
 
     pub fn orbit_left_right(&mut self, delta: f32) {
-        self.left_right_angle += delta / 50.0;
+        self.left_right_angle += delta * self.sensitivity;
     }
 
     pub fn orbit_up_down(&mut self, delta: f32) {
-        self.up_down_angle += delta / 50.0;
-        log::debug!("up_down_angle: {}", self.up_down_angle % (2.0 * PI) / (2.0 * PI) * 360.0);
+        self.up_down_angle += delta * self.sensitivity;
+        // protect some weird camera movements
+        // -pi/2 < up_down_angle < pi/2 
+        if self.up_down_angle < -(PI / 1.9) {
+            self.up_down_angle = -(PI / 1.9);
+        }
+        if self.up_down_angle > (PI / 2.1) {
+            self.up_down_angle = PI / 2.1;
+        }
     }
 
     pub fn zoom(&mut self, zoom: f32) {
